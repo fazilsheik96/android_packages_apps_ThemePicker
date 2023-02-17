@@ -30,7 +30,6 @@ import com.android.customization.picker.quickaffordance.ui.viewmodel.KeyguardQui
 import com.android.wallpaper.R
 import com.android.wallpaper.module.InjectorProvider
 import com.android.wallpaper.picker.AppbarFragment
-import com.android.wallpaper.picker.undo.ui.binder.RevertToolbarButtonBinder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -62,18 +61,14 @@ class KeyguardQuickAffordancePickerFragment : AppbarFragment() {
                     injector.getKeyguardQuickAffordancePickerViewModelFactory(requireContext()),
                 )
                 .get()
-        setUpToolbarMenu(R.menu.undoable_customization_menu)
-        RevertToolbarButtonBinder.bind(
-            view = view.requireViewById(toolbarId),
-            viewModel = viewModel.undo,
-            lifecycleOwner = this,
-        )
 
         KeyguardQuickAffordancePreviewBinder.bind(
             activity = requireActivity(),
             previewView = view.requireViewById(R.id.preview),
             viewModel = viewModel,
             lifecycleOwner = this,
+            offsetToStart =
+                injector.getDisplayUtils(requireActivity()).isOnWallpaperDisplay(requireActivity())
         )
         KeyguardQuickAffordancePickerBinder.bind(
             view = view,
@@ -85,5 +80,9 @@ class KeyguardQuickAffordancePickerFragment : AppbarFragment() {
 
     override fun getDefaultTitle(): CharSequence {
         return requireContext().getString(R.string.keyguard_quick_affordance_title)
+    }
+
+    override fun getToolbarColorId(): Int {
+        return android.R.color.transparent
     }
 }

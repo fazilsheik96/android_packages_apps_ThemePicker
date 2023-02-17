@@ -133,6 +133,11 @@
     <!-- For the color option section -->
     <dimen name="color_options_container_top_margin">24dp</dimen>
 
+    <dimen name="component_color_overflow_small_radius_default">20dp</dimen>
+    <dimen name="component_color_overflow_small_diameter_default">40dp</dimen>
+    <dimen name="component_color_selected_small_radius_default">22dp</dimen>
+    <dimen name="component_color_selected_small_diameter_default">44dp</dimen>
+
     <!-- For the color page. -->
     <dimen name="color_page_indicator_margin_top">16dp</dimen>
 
@@ -147,4 +152,8 @@
     <dimen name="keyguard_quick_affordance_icon_size">24dp</dimen>
     <!-- Width of a single selectable item in the lock screen quick affordance picker. -->
     <dimen name="keyguard_quick_affordance_picker_item_width">74dp</dimen>
+
+    <dimen name="clock_carousel_item_width">190dp</dimen>
+    <dimen name="clock_carousel_item_height">380dp</dimen>
+    <dimen name="clock_carousel_item_margin">16dp</dimen>
 </resources>
