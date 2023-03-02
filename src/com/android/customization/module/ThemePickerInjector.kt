@@ -249,7 +249,9 @@ open class ThemePickerInjector : WallpaperPicker2Injector(), CustomizationInject
         return KeyguardQuickAffordancePickerInteractor(
             KeyguardQuickAffordancePickerRepository(client, Dispatchers.IO),
             client
-        ) { getKeyguardQuickAffordanceSnapshotRestorer(context) }
+        ) {
+            getKeyguardQuickAffordanceSnapshotRestorer(context)
+        }
     }
 
     protected fun getKeyguardQuickAffordancePickerProviderClient(
@@ -418,11 +420,16 @@ open class ThemePickerInjector : WallpaperPicker2Injector(), CustomizationInject
 
     override fun getClockSettingsViewModelFactory(
         context: Context,
+        wallpaperColorsViewModel: WallpaperColorsViewModel,
     ): ClockSettingsViewModel.Factory {
         return clockSettingsViewModelFactory
             ?: ClockSettingsViewModel.Factory(
                     context,
                     getClockPickerInteractor(context),
+                    getColorPickerInteractor(
+                        context,
+                        wallpaperColorsViewModel,
+                    ),
                 )
                 .also { clockSettingsViewModelFactory = it }
     }

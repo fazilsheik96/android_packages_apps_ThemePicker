@@ -109,7 +109,9 @@ class TestCustomizationInjector : TestInjector(), CustomizationInjector {
         return KeyguardQuickAffordancePickerInteractor(
             KeyguardQuickAffordancePickerRepository(client, Dispatchers.IO),
             client
-        ) { getKeyguardQuickAffordanceSnapshotRestorer(context) }
+        ) {
+            getKeyguardQuickAffordanceSnapshotRestorer(context)
+        }
     }
 
     override fun getFlags(): BaseFlags {
@@ -218,11 +220,16 @@ class TestCustomizationInjector : TestInjector(), CustomizationInjector {
 
     override fun getClockSettingsViewModelFactory(
         context: Context,
+        wallpaperColorsViewModel: WallpaperColorsViewModel,
     ): ClockSettingsViewModel.Factory {
         return clockSettingsViewModelFactory
             ?: ClockSettingsViewModel.Factory(
                     context,
                     getClockPickerInteractor(context),
+                    getColorPickerInteractor(
+                        context,
+                        wallpaperColorsViewModel,
+                    ),
                 )
                 .also { clockSettingsViewModelFactory = it }
     }
