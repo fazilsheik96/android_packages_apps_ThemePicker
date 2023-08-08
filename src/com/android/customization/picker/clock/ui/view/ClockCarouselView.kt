@@ -360,7 +360,7 @@ class ClockCarouselView(
             val isMiddleView = isMiddleView(viewRoot.id)
 
             // Accessibility
-            viewRoot.contentDescription = getContentDescription(index, view.resources)
+            viewRoot.contentDescription = clocks[index].getContentDescription(view.resources)
             viewRoot.isSelected = isMiddleView
 
             when (clockSize) {
