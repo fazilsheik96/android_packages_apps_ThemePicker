@@ -39,7 +39,9 @@ import com.android.customization.picker.clock.ui.fragment.ClockSettingsFragment
 import com.android.customization.picker.clock.ui.view.ClockCarouselView
 import com.android.customization.picker.clock.ui.view.ClockViewFactory
 import com.android.customization.picker.clock.ui.viewmodel.ClockCarouselViewModel
+import com.android.customization.picker.color.domain.interactor.ColorPickerInteractor
 import com.android.wallpaper.R
+import com.android.wallpaper.model.CustomizationSectionController
 import com.android.wallpaper.model.CustomizationSectionController.CustomizationSectionNavigationController
 import com.android.wallpaper.model.WallpaperColorsViewModel
 import com.android.wallpaper.model.WallpaperPreviewNavigator
@@ -49,6 +51,7 @@ import com.android.wallpaper.picker.customization.domain.interactor.WallpaperInt
 import com.android.wallpaper.picker.customization.ui.section.ScreenPreviewClickView
 import com.android.wallpaper.picker.customization.ui.section.ScreenPreviewSectionController
 import com.android.wallpaper.picker.customization.ui.section.ScreenPreviewView
+import com.android.wallpaper.picker.customization.ui.viewmodel.CustomizationPickerViewModel
 import com.android.wallpaper.util.DisplayUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -70,8 +73,10 @@ class PreviewWithClockCarouselSectionController(
     private val navigationController: CustomizationSectionNavigationController,
     wallpaperInteractor: WallpaperInteractor,
     themedIconInteractor: ThemedIconInteractor,
+    colorPickerInteractor: ColorPickerInteractor,
     wallpaperManager: WallpaperManager,
     private val isTwoPaneAndSmallWidth: Boolean,
+    customizationPickerViewModel: CustomizationPickerViewModel,
 ) :
     PreviewWithThemeSectionController(
         activity,
@@ -83,8 +88,10 @@ class PreviewWithClockCarouselSectionController(
         wallpaperPreviewNavigator,
         wallpaperInteractor,
         themedIconInteractor,
+        colorPickerInteractor,
         wallpaperManager,
         isTwoPaneAndSmallWidth,
+        customizationPickerViewModel,
     ) {
 
     private val viewModel =
@@ -98,8 +105,11 @@ class PreviewWithClockCarouselSectionController(
 
     override val hideLockScreenClockPreview = true
 
-    override fun createView(context: Context): ScreenPreviewView {
-        val view = super.createView(context)
+    override fun createView(
+        context: Context,
+        params: CustomizationSectionController.ViewCreationParams,
+    ): ScreenPreviewView {
+        val view = super.createView(context, params)
         if (screen == CustomizationSections.Screen.LOCK_SCREEN) {
             val screenPreviewClickView: ScreenPreviewClickView =
                 view.findViewById(R.id.screen_preview_click_view)

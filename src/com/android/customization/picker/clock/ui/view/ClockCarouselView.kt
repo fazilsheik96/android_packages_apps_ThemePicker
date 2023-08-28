@@ -71,17 +71,31 @@ class ClockCarouselView(
         clockViewFactory = factory
     }
 
+    // This function is for the custom accessibility action to trigger a transition to the next
+    // carousel item. If the current item is the last item in the carousel, the next item
+    // will be the first item.
     fun transitionToNext() {
-        val index = (carousel.currentIndex + 1) % carousel.count
-        if (index < carousel.count && index > 0) {
-            carousel.transitionToIndex(index, 0)
+        if (carousel.count != 0) {
+            val index = (carousel.currentIndex + 1) % carousel.count
+            carousel.jumpToIndex(index)
+            // Explicitly called this since using transitionToIndex(index) leads to
+            // race-condition between announcement of content description of the correct clock-face
+            // and the selection of clock face itself
+            adapter.onNewItem(index)
         }
     }
 
+    // This function is for the custom accessibility action to trigger a transition to
+    // the previous carousel item. If the current item is the first item in the carousel,
+    // the previous item will be the last item.
     fun transitionToPrevious() {
-        val index = (carousel.currentIndex - 1) % carousel.count
-        if (index < carousel.count && index > 0) {
-            carousel.transitionToIndex(index, 0)
+        if (carousel.count != 0) {
+            val index = (carousel.currentIndex + carousel.count - 1) % carousel.count
+            carousel.jumpToIndex(index)
+            // Explicitly called this since using transitionToIndex(index) leads to
+            // race-condition between announcement of content description of the correct clock-face
+            // and the selection of clock face itself
+            adapter.onNewItem(index)
         }
     }
 
@@ -101,7 +115,13 @@ class ClockCarouselView(
 
         adapter = ClockCarouselAdapter(clockSize, clocks, clockViewFactory, onClockSelected)
         carousel.setAdapter(adapter)
-        carousel.refresh()
+        val indexOfSelectedClock =
+            clocks
+                .indexOfFirst { it.isSelected }
+                // If not found, default to the first clock as selected:
+                .takeIf { it != -1 }
+                ?: 0
+        carousel.jumpToIndex(indexOfSelectedClock)
         motionLayout.setTransitionListener(
             object : MotionLayout.TransitionListener {
 
@@ -211,11 +231,13 @@ class ClockCarouselView(
                         }
                             ?: return
                     offCenterClockHostView.doOnPreDraw {
-                        it.pivotX = progress * it.width / 2
+                        it.pivotX =
+                            progress * it.width / 2 + (1 - progress) * getCenteredHostViewPivotX(it)
                         it.pivotY = progress * it.height / 2
                     }
                     toCenterClockHostView.doOnPreDraw {
-                        it.pivotX = (1 - progress) * it.width / 2
+                        it.pivotX =
+                            (1 - progress) * it.width / 2 + progress * getCenteredHostViewPivotX(it)
                         it.pivotY = (1 - progress) * it.height / 2
                     }
                     offCenterClockFrame.translationX =
@@ -265,9 +287,11 @@ class ClockCarouselView(
     fun setSelectedClockIndex(
         index: Int,
     ) {
-        // jumpToIndex to the same position can cause the views unnecessarily populate again.
-        // Only call jumpToIndex when the jump-to index is different from the current carousel.
-        if (index != carousel.currentIndex) {
+        // 1. setUpClockCarouselView() can possibly not be called before setSelectedClockIndex().
+        //    We need to check if index out of bound.
+        // 2. jumpToIndex() to the same position can cause the views unnecessarily populate again.
+        //    We only call jumpToIndex when the index is different from the current carousel.
+        if (index < carousel.count && index != carousel.currentIndex) {
             carousel.jumpToIndex(index)
         }
     }
@@ -360,7 +384,7 @@ class ClockCarouselView(
             val isMiddleView = isMiddleView(viewRoot.id)
 
             // Accessibility
-            viewRoot.contentDescription = clocks[index].getContentDescription(view.resources)
+            viewRoot.contentDescription = getContentDescription(index, view.resources)
             viewRoot.isSelected = isMiddleView
 
             when (clockSize) {
@@ -417,7 +441,7 @@ class ClockCarouselView(
         ) {
             clockHostView.doOnPreDraw {
                 if (isMiddleView) {
-                    it.pivotX = 0F
+                    it.pivotX = getCenteredHostViewPivotX(it)
                     it.pivotY = 0F
                     clockView.translationX = 0F
                     clockView.translationY = 0F
@@ -505,6 +529,10 @@ class ClockCarouselView(
 
         fun isMiddleView(rootViewId: Int): Boolean {
             return rootViewId == R.id.item_view_2
+        }
+
+        fun getCenteredHostViewPivotX(hostView: View): Float {
+            return if (hostView.isLayoutRtl) hostView.width.toFloat() else 0F
         }
 
         private fun getTranslationDistance(

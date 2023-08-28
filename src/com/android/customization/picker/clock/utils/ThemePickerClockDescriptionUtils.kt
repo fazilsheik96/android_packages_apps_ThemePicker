@@ -15,11 +15,8 @@
  */
 package com.android.customization.picker.clock.utils
 
-import androidx.annotation.StringRes
-
 class ThemePickerClockDescriptionUtils : ClockDescriptionUtils {
-    @StringRes
-    override fun getDescriptionResId(clockId: String): Int {
-        return -1
+    override fun getDescription(clockId: String): String {
+        return ""
     }
 }

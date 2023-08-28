@@ -82,6 +82,7 @@ java_defaults {
         "androidx.lifecycle_lifecycle-viewmodel-ktx",
         "androidx.recyclerview_recyclerview",
         "SystemUICustomizationLib",
+        "hilt_android",
     ],
 
     jni_libs: [
@@ -101,7 +102,7 @@ java_defaults {
     optimize: {
         enabled: false,
     },
-    kotlincflags: ["-Xjvm-default=enable"],
+    kotlincflags: ["-Xjvm-default=all"],
     certificate: "",
 
     privileged: true,
