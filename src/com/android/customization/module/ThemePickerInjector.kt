@@ -31,6 +31,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.android.customization.model.color.ColorCustomizationManager
 import com.android.customization.model.color.ColorOptionsProvider
+import com.android.customization.model.color.ColorOptionsProvider.COLOR_SOURCE_PRESET
 import com.android.customization.model.grid.GridOptionsManager
 import com.android.customization.model.grid.data.repository.GridRepositoryImpl
 import com.android.customization.model.grid.domain.interactor.GridInteractor
@@ -69,6 +70,7 @@ import com.android.customization.picker.quickaffordance.ui.viewmodel.KeyguardQui
 import com.android.systemui.shared.clocks.ClockRegistry
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClient
 import com.android.systemui.shared.customization.data.content.CustomizationProviderClientImpl
+import com.android.wallpaper.config.BaseFlags
 import com.android.wallpaper.dispatchers.BackgroundDispatcher
 import com.android.wallpaper.dispatchers.MainDispatcher
 import com.android.wallpaper.model.LiveWallpaperInfo
@@ -571,7 +573,7 @@ internal constructor(
                 .also { gridScreenViewModelFactory = it }
     }
 
-    private fun getGridInteractor(
+    fun getGridInteractor(
         context: Context,
     ): GridInteractor {
         val appContext = context.applicationContext
@@ -583,6 +585,8 @@ internal constructor(
                             applicationScope = getApplicationCoroutineScope(),
                             manager = GridOptionsManager.getInstance(context),
                             backgroundDispatcher = bgDispatcher,
+                            isGridApplyButtonEnabled =
+                                BaseFlags.get().isGridApplyButtonEnabled(appContext),
                         ),
                     snapshotRestorer = { getGridSnapshotRestorer(appContext) },
                 )
@@ -597,6 +601,12 @@ internal constructor(
                     interactor = getGridInteractor(context),
                 )
                 .also { gridSnapshotRestorer = it }
+    }
+
+    override fun isCurrentSelectedColorPreset(context: Context): Boolean {
+        val colorManager =
+            ColorCustomizationManager.getInstance(context, OverlayManagerCompat(context))
+        return COLOR_SOURCE_PRESET == colorManager.currentColorSource
     }
 
     companion object {

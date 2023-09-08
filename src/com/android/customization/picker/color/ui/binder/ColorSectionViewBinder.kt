@@ -109,25 +109,23 @@ object ColorSectionViewBinder {
                     viewModel = item.text,
                 )
             }
-            val optionSelectedView = itemView.findViewById<ImageView>(R.id.option_selected)
+            val optionSelectedView = itemView.requireViewById<ImageView>(R.id.option_selected)
 
             lifecycleOwner.lifecycleScope.launch {
-                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    launch {
-                        item.isSelected.collect { isSelected ->
-                            optionSelectedView.isVisible = isSelected
-                        }
+                launch {
+                    item.isSelected.collect { isSelected ->
+                        optionSelectedView.isVisible = isSelected
                     }
-                    launch {
-                        item.onClicked.collect { onClicked ->
-                            itemView.setOnClickListener(
-                                if (onClicked != null) {
-                                    View.OnClickListener { onClicked.invoke() }
-                                } else {
-                                    null
-                                }
-                            )
-                        }
+                }
+                launch {
+                    item.onClicked.collect { onClicked ->
+                        itemView.setOnClickListener(
+                            if (onClicked != null) {
+                                View.OnClickListener { onClicked.invoke() }
+                            } else {
+                                null
+                            }
+                        )
                     }
                 }
             }

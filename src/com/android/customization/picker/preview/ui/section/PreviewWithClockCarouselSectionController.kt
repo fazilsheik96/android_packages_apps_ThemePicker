@@ -23,7 +23,6 @@ import android.graphics.Rect
 import android.view.TouchDelegate
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
-import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.activity.ComponentActivity
 import androidx.constraintlayout.helper.widget.Carousel
@@ -112,7 +111,7 @@ class PreviewWithClockCarouselSectionController(
         val view = super.createView(context, params)
         if (screen == CustomizationSections.Screen.LOCK_SCREEN) {
             val screenPreviewClickView: ScreenPreviewClickView =
-                view.findViewById(R.id.screen_preview_click_view)
+                view.requireViewById(R.id.screen_preview_click_view)
             val clockColorAndSizeButtonStub: ViewStub =
                 view.requireViewById(R.id.clock_color_and_size_button)
             clockColorAndSizeButtonStub.layoutResource = R.layout.clock_color_and_size_button
@@ -156,12 +155,6 @@ class PreviewWithClockCarouselSectionController(
                 guidelineEnd.layoutParams = layoutParams
             }
 
-            // TODO (b/270716937) We should handle the single clock case in the clock carousel
-            // itself
-            val singleClockViewStub: ViewStub = view.requireViewById(R.id.single_clock_view_stub)
-            singleClockViewStub.layoutResource = R.layout.single_clock_view
-            val singleClockView = singleClockViewStub.inflate() as ViewGroup
-
             /**
              * Only bind after [Carousel.onAttachedToWindow]. This is to avoid the race condition
              * that the flow emits before attached to window where [Carousel.mMotionLayout] is still
@@ -171,13 +164,12 @@ class PreviewWithClockCarouselSectionController(
             var bindJob: Job? = null
             onAttachStateChangeListener =
                 object : OnAttachStateChangeListener {
-                    override fun onViewAttachedToWindow(view: View?) {
+                    override fun onViewAttachedToWindow(view: View) {
                         bindJob =
                             lifecycleOwner.lifecycleScope.launch {
                                 ClockCarouselViewBinder.bind(
                                     context = context,
                                     carouselView = carouselView,
-                                    singleClockView = singleClockView,
                                     screenPreviewClickView = screenPreviewClickView,
                                     viewModel = viewModel,
                                     clockViewFactory = clockViewFactory,
@@ -192,7 +184,7 @@ class PreviewWithClockCarouselSectionController(
                             }
                     }
 
-                    override fun onViewDetachedFromWindow(view: View?) {
+                    override fun onViewDetachedFromWindow(view: View) {
                         bindJob?.cancel()
                     }
                 }
