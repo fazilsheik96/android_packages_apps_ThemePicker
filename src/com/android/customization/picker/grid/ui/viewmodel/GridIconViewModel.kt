@@ -15,7 +15,7 @@
  *
  */
 
-package com.android.customization.model.grid.ui.viewmodel
+package com.android.customization.picker.grid.ui.viewmodel
 
 data class GridIconViewModel(
     val columns: Int,

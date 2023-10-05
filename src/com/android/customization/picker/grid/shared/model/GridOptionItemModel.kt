@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,22 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
-package com.android.customization.testing;
 
-import com.android.wallpaper.module.PackageStatusNotifier;
+package com.android.customization.picker.grid.shared.model
 
-/**
- * Test implementation of {@link PackageStatusNotifier}.
- */
-public class TestPackageStatusNotifier implements PackageStatusNotifier {
-    @Override
-    public void addListener(Listener listener, String action) {
-        // Do nothing
-    }
+import kotlinx.coroutines.flow.StateFlow
 
-    @Override
-    public void removeListener(Listener listener) {
-        // Do nothing
-    }
-}
+data class GridOptionItemModel(
+    val name: String,
+    val cols: Int,
+    val rows: Int,
+    val isSelected: StateFlow<Boolean>,
+    val onSelected: suspend () -> Unit,
+)

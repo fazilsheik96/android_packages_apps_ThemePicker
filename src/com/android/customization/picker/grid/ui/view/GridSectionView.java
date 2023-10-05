@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,17 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
+package com.android.customization.picker.grid.ui.view;
 
-package com.android.customization.model.grid.shared.model
+import android.content.Context;
+import android.util.AttributeSet;
 
-import kotlinx.coroutines.flow.StateFlow
+import androidx.annotation.Nullable;
 
-data class GridOptionItemModel(
-    val name: String,
-    val cols: Int,
-    val rows: Int,
-    val isSelected: StateFlow<Boolean>,
-    val onSelected: suspend () -> Unit,
-)
+import com.android.wallpaper.picker.SectionView;
+
+/** The {@link SectionView} for app grid. */
+public final class GridSectionView extends SectionView {
+
+    public GridSectionView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+}
