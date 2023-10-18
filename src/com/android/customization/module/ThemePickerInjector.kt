@@ -23,7 +23,6 @@ import android.content.res.Resources
 import android.net.Uri
 import android.text.TextUtils
 import androidx.activity.ComponentActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -33,12 +32,12 @@ import com.android.customization.model.color.ColorOptionsProvider.COLOR_SOURCE_P
 import com.android.customization.model.grid.GridOptionsManager
 import com.android.customization.model.mode.DarkModeSnapshotRestorer
 import com.android.customization.model.theme.OverlayManagerCompat
-import com.android.customization.model.theme.ThemeBundleProvider
-import com.android.customization.model.theme.ThemeManager
 import com.android.customization.model.themedicon.ThemedIconSwitchProvider
 import com.android.customization.model.themedicon.data.repository.ThemeIconRepository
 import com.android.customization.model.themedicon.domain.interactor.ThemedIconInteractor
 import com.android.customization.model.themedicon.domain.interactor.ThemedIconSnapshotRestorer
+import com.android.customization.module.logging.StatsLogUserEventLogger
+import com.android.customization.module.logging.ThemesUserEventLogger
 import com.android.customization.picker.clock.data.repository.ClockPickerRepositoryImpl
 import com.android.customization.picker.clock.data.repository.ClockRegistryProvider
 import com.android.customization.picker.clock.domain.interactor.ClockPickerInteractor
@@ -74,8 +73,8 @@ import com.android.wallpaper.dispatchers.MainDispatcher
 import com.android.wallpaper.model.WallpaperColorsRepository
 import com.android.wallpaper.module.CustomizationSections
 import com.android.wallpaper.module.FragmentFactory
-import com.android.wallpaper.module.UserEventLogger
 import com.android.wallpaper.module.WallpaperPicker2Injector
+import com.android.wallpaper.module.logging.UserEventLogger
 import com.android.wallpaper.picker.CustomizationPickerActivity
 import com.android.wallpaper.picker.customization.data.content.WallpaperClientImpl
 import com.android.wallpaper.picker.customization.data.repository.WallpaperRepository
@@ -202,15 +201,6 @@ internal constructor(
 
     override fun getCustomizationPreferences(context: Context): CustomizationPreferences {
         return getPreferences(context) as CustomizationPreferences
-    }
-
-    override fun getThemeManager(
-        provider: ThemeBundleProvider,
-        activity: FragmentActivity,
-        overlayManagerCompat: OverlayManagerCompat,
-        logger: ThemesUserEventLogger
-    ): ThemeManager {
-        return ThemeManager(provider, activity, overlayManagerCompat, logger)
     }
 
     override fun getWallpaperInteractor(context: Context): WallpaperInteractor {
