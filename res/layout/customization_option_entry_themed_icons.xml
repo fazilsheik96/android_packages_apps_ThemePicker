@@ -25,19 +25,32 @@
     android:clickable="true">
 
     <TextView
+        android:id="@+id/option_entry_themed_icons_title"
         style="@style/SectionTitleTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/show_notifications_on_lock_screen"
+        android:text="@string/themed_icon_title"
         android:layout_marginEnd="@dimen/customization_option_entry_text_margin_end"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/option_entry_show_notifications_switch"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/option_entry_themed_icons_switch"
+        app:layout_constraintBottom_toTopOf="@+id/option_entry_themed_icons_description"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <TextView
+        android:id="@+id/option_entry_themed_icons_description"
+        style="@style/SectionSubtitleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/customization_option_entry_text_margin_end"
+        android:text="@string/beta_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/option_entry_themed_icons_switch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/option_entry_themed_icons_title" />
+
     <Switch
-        android:id="@+id/option_entry_show_notifications_switch"
+        android:id="@+id/option_entry_themed_icons_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="false"
